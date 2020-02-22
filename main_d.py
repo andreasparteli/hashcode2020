@@ -56,8 +56,9 @@ def write(libs_to_scan, outfilepath='output.txt'):
 
 ### WORK
 # infilepath = 'in/a_example.txt'
-infilepath = 'in/b_read_on.txt'
-infilepath = 'in/c_incunabula.txt'
+# infilepath = 'in/b_read_on.txt'
+# infilepath = 'in/c_incunabula.txt'
+infilepath = 'in/d_tough_choices.txt'
 n_books, n_libs, n_days, books, libs = read(infilepath)
 
 
@@ -68,19 +69,19 @@ for lib in libssorted:
     lib['score'] = libscore(books, lib)
     # lib['books'].sort(key=lambda b: books[b], reverse=True)
 # libssorted.sort(key=lambda l: l['score'], reverse=True)
-libssorted.sort(key=lambda l: l['signup'], reverse=True)
+libssorted.sort(key=lambda l: l['signup'] * 100_000 - len(l['books']), reverse=False)
 
 ### simulate
 libsts = {}
 next_signup = 0
 for d in range(n_days):
     if d == next_signup and d < n_days - 1:
-        pick = libssorted.pop()
+        pick = libssorted.pop(0)
         next_signup += pick['signup']
         books_to_pick = max(0, (n_days - d - pick['signup']) * pick['ships'])
         if books_to_pick > 0:
             to_pick = list(pick['books'])
-            to_pick.sort(key=lambda b: books[b], reverse=True)
+            # to_pick.sort(key=lambda b: books[b], reverse=True)
             pickedbooks = to_pick[0:min(books_to_pick, len(pick['books']))]
             # print(f"On day {d} picking lib {pick['id']} (signup: {pick['signup']}, ships: {pick['ships']}) where we scan {len(pickedbooks)} out of {len(pick['books'])} books")
 
@@ -90,10 +91,11 @@ for d in range(n_days):
 
             for lib in libssorted:
                 lib['books'] -= pickedbooks_set
+            libssorted.sort(key=lambda l: l['signup'] * 100_000 - len(l['books']), reverse=False)
 
 
 libtsinorder = [l for l in libsts.values()]
 libtsinorder.sort(key=lambda lib: lib['signup'])
 print(f"Score is {score(books, libtsinorder)}")
 
-write(libtsinorder)
+write(libtsinorder, 'output_d.txt')
