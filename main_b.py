@@ -88,4 +88,4 @@ libtsinorder = [l for l in libsts.values()]
 libtsinorder.sort(key=lambda lib: lib['signup'])
 print(f"Score is {score(books, libtsinorder)}")
 
-write(libtsinorder)
+write(libtsinorder, 'output_b.txt')

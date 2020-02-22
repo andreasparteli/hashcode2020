@@ -49,4 +49,4 @@ ts = [libs[0]]
 
 print(f"Score is {score(books, ts)}")
 
-write(ts)
+write(ts, 'output_a.txt')
